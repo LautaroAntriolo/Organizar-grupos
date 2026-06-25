@@ -1,0 +1,19 @@
+# =========================================================================
+#  Configuración de Streamlit
+# =========================================================================
+
+[theme]
+base = "dark"
+primaryColor = "#6366f1"
+backgroundColor = "#0e1117"
+secondaryBackgroundColor = "#1b1f2a"
+textColor = "#e6e6e6"
+font = "sans serif"
+
+[server]
+# Vuelve a ejecutar la app automáticamente al guardar cambios en el código.
+runOnSave = true
+
+[browser]
+# No enviar estadísticas de uso.
+gatherUsageStats = false
