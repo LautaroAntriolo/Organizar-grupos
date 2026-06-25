@@ -414,35 +414,40 @@ with st.sidebar:
 # =========================================================================== #
 st.title("🎲 Sorteo de Grupos")
 
-current = data.get("current")
-if current and current.get("groups"):
-    st.markdown(activity_card_html(current["activity"], current["date"]),
-                unsafe_allow_html=True)
-
-    if st.session_state.just_drawn:
-        st.subheader("Armando los grupos…")
-        animate_groups(current["groups"], current.get("scores", {}))
-        time.sleep(0.6)
-        st.balloons()
-        st.session_state.just_drawn = False
-    else:
-        st.markdown(
-            groups_grid_html(current["groups"], scores=current.get("scores", {})),
-            unsafe_allow_html=True,
-        )
+if not st.session_state.authenticated:
+    st.info("🔒 Iniciá sesión en el panel de la izquierda para ver el resultado "
+            "del sorteo y el historial.")
 else:
-    st.info("Todavía no se realizó ningún sorteo. "
-            "El administrador puede iniciar sesión en el panel de la izquierda "
-            "para cargar la lista y sortear los grupos.")
+    current = data.get("current")
+    if current and current.get("groups"):
+        st.markdown(activity_card_html(current["activity"], current["date"]),
+                    unsafe_allow_html=True)
 
-# Historial de sorteos por fecha
-if data.get("history"):
-    st.divider()
-    st.subheader("📚 Historial de sorteos")
-    for entry in reversed(data["history"]):
-        nombre = entry["activity"] or "Sin nombre"
-        with st.expander(f"📅 {entry['date']} — {nombre}"):
+        if st.session_state.just_drawn:
+            st.subheader("Armando los grupos…")
+            animate_groups(current["groups"], current.get("scores", {}))
+            time.sleep(0.6)
+            st.balloons()
+            st.session_state.just_drawn = False
+        else:
             st.markdown(
-                groups_grid_html(entry["groups"], scores=entry.get("scores", {})),
+                groups_grid_html(current["groups"],
+                                 scores=current.get("scores", {})),
                 unsafe_allow_html=True,
             )
+    else:
+        st.info("Todavía no se realizó ningún sorteo. "
+                "Cargá la lista y sorteá los grupos desde el panel de la izquierda.")
+
+    # Historial de sorteos por fecha
+    if data.get("history"):
+        st.divider()
+        st.subheader("📚 Historial de sorteos")
+        for entry in reversed(data["history"]):
+            nombre = entry["activity"] or "Sin nombre"
+            with st.expander(f"📅 {entry['date']} — {nombre}"):
+                st.markdown(
+                    groups_grid_html(entry["groups"],
+                                     scores=entry.get("scores", {})),
+                    unsafe_allow_html=True,
+                )
